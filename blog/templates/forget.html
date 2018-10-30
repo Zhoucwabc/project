@@ -1,0 +1,32 @@
+{% extends 'register.html' %}
+{% block title %}
+<title>修改</title>
+{% endblock %}
+
+{% block h_title %}
+<h1>修改密码</h1>
+{% endblock %}
+
+{% block description %}
+<h2>修改密码</h2>
+{% endblock %}
+
+{% block form %}
+<form action="#" method="post">
+    {% csrf_token %}
+    <div class="input-group">
+        <span><i class="fa fa-envelope" aria-hidden="true"></i></span>
+        <input type="email" placeholder="邮箱" required="">
+    </div>
+    <div class="input-group">
+        <span><i class="fa fa-user" aria-hidden="true"></i></span>
+        <input type="text" placeholder="验证码" required="">
+    </div>
+    <div class="input-group">
+        <span><i class="fa fa-user" aria-hidden="true"></i></span>
+        <input type="password" placeholder="新密码" required="">
+    </div>
+    <!--<input type="checkbox" value="remember-me" /> <h4>Send me latest updates </h4>-->
+    <button class="btn btn-danger btn-block" type="submit">完成修改</button >
+</form>
+{% endblock %}

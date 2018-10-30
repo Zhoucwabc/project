@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+{% block title %}
+<title>注册</title>
+{% endblock %}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<meta name="keywords" content="" />
+<link href="/static/css/font-awesome.min.css" rel="stylesheet" type="text/css" media="all">
+<link href="/static/css/style.css" rel="stylesheet" type="text/css" media="all"/>
+<!--<link href="/static/css/googleapis.css" rel="stylesheet">-->
+</head>
+<body>
+<div class="signupform">
+{% block h_title %}
+<h1>注册账号</h1>
+{% endblock %}
+	<div class="container">
+		<div class="agile_info">
+			<div class="w3l_form">
+				<div class="left_grid_info">
+					<h3>欢迎 !</h3>
+					<h4>感谢您的使用。</h4>
+					<p> 参观我的博客你会了解一些python相关的知识以及关于我的信息。</p>
+					<ul class="social_section_1info">
+						<li><a href="#" class="w3_facebook"><i class="fa fa-facebook"></i></a></li>
+						<li><a href="#" class="w3_twitter"><i class="fa fa-twitter"></i></a></li>
+						<li><a href="#" class="w3_instagram"><i class="fa fa-instagram"></i></a></li>
+						<li><a href="#" class="w3_google"><i class="fa fa-google-plus"></i></a></li>
+						<li><a href="#" class="w3_pinterest"><i class="fa fa-pinterest"></i></a></li>
+						<li><a href="#" class="w3_vimeo"><i class="fa fa-vimeo"></i></a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="w3_info">
+				{% block description %}
+				<h2>创建账号</h2>
+				<p>需要您填入昵称(评论时的称谓)，登录账号，登录密码，邮箱(修改密码需要)</p>
+				{% endblock %}
+				{% block form %}
+						<form action="#" method="post">
+							{% csrf_token %}
+						<div class="input-group">
+							<span><i class="fa fa-user" aria-hidden="true"></i></span>
+							<input type="text" placeholder="昵称" required="">
+						</div>
+						<div class="input-group">
+							<span><i class="fa fa-user" aria-hidden="true"></i></span>
+							<input type="text" placeholder="账号" required="">
+						</div>
+						<div class="input-group">
+							<span><i class="fa fa-lock" aria-hidden="true"></i></span>
+							<input type="Password" placeholder="密码" required="">
+						</div>
+						<div class="input-group">
+							<span><i class="fa fa-lock" aria-hidden="true"></i></span>
+							<input type="Password" placeholder="确认密码" required="">
+						</div>
+						<div class="input-group">
+							<span><i class="fa fa-envelope" aria-hidden="true"></i></span>
+							<input type="email" placeholder="邮箱" required="">
+						</div>
+							<!--<input type="checkbox" value="remember-me" /> <h4>Send me latest updates </h4>-->
+							<button class="btn btn-danger btn-block" type="submit">完成注册</button >
+					</form>
+				{% endblock %}
+			</div>
+			<div class="clear"></div>
+			</div>
+			
+		</div>
+		<div class="footer">
+
+ <p>
+	 个人博客 邮箱 xabczhou@163.com
+ </p>
+ </div>
+	</div>
+	</body>
+</html>

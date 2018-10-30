@@ -1,0 +1,1070 @@
+赵旭
+zhaoxu@tedu.cn
+
+Flask 轻量级 WEB 框架
+AJAX 阿贾克斯 ，在web中主要完成 异步的请求和响应
+Django 重量级 WEB 框架
+
+1.静态网页 与 动态网页
+	1.静态网页 ：无法与服务器进行交互的网页
+	2.动态网页 ：能够与服务器进行交互的网页
+2.WEB 与 服务器
+	1.WEB ：网页 （HTML,CSS,JS）
+	2.服务器
+		能够给用户提供服务的机器就是服务器
+		1.硬件 与 软件
+			硬件范畴：一台主机
+			软件范畴：一个能够接收用户请求并给出响应的程序
+				1.APACHE
+				2.TOMCAT
+				3.IIS (Internet Information Service)
+				4.Nginx
+				... ...
+		2.作用
+			1.存储WEB所需要的信息
+			2.能够处理用户的请求(request)并给出响应(response)
+			3.能够执行服务器端程序
+			4.具备一定的安全功能
+3.框架
+	1.什么是框架
+		框架是一个为了解决开放性问题而存在的一种结构。框架本身也提供了一些最基本的功能。我们只需要在基础功能上搭建属于自己的操作即可
+	2.Python Web 框架
+		1.flask
+		2.django
+		3.tornado
+		4.webpy 
+		... ...
+
+		WEB重点：请求，响应，数据
+4.Flask 框架
+	1.什么是 Flask
+		Flask是一个基于Python并且依赖于Jinja2模板引擎和Werkzeug WSGI 服务的一个微型框架
+		WSGI ：Web Server Gateway Interface(WEB服务网关接口)
+	2.Flask 的框架模式 - MTV
+		M ：Models ，模型层，负责数据库建模
+		T ：Templates ，模板层，用于处理用户显示的内容，如：html
+		V ：Views ，视图层，处理与用户交互的部分内容。处理用户的请求并给出响应
+
+		经典三层结构 ：MVC
+			M ：Models ，模型层，负责数据库建模
+			V ：Views，视图层，用于处理用户显示的部分内容如 :html
+			C ：Controller，控制器，处理与用户交互的部分内容。处理用户的请求与响应
+5.Flask 实现
+	1.安装 flask
+		sudo pip3 install flask
+
+		查看已安装的flask版本
+		在 python 的交互模式中
+			import flask
+			flask.__version__
+	
+		flask 官网 ：http://flask.pocoo.org/
+	2.初始化
+		见代码
+		
+		访问路径：http://localhost:5000/login : 显示"登录页面"
+		访问路径：http://localhost:5000/register ：显示"注册页面"
+6.Flask - 路由(route)
+	1.什么是路由
+		客户端将请求发送给web服务器，web服务器再将请求发送给flask程序实例
+		程序实例需要知道每个url请求要运行哪些代码，所以需要建立一个 url 到 python 函数的映射，处理url和函数之间的关系的程序就是 路由
+		在Flask中，路由是通过 @app.route 装饰器来表示的
+	2.路由的体现
+		1.路由的基本表示
+			@app.route('/')
+			def index():
+				reutrn "xxx"
+
+			@app.route('/login')
+			def login():
+				return 'xxx'
+		2.带参数的路由
+			http://localhost:5000/show/sf.zh
+			http://localhost:5000/show/wuji.zh
+			http://localhost:5000/show/zhouzhiruo
+			1.基本带参路由
+				@app.route('/show/<name>')
+				def show1(name):
+					在函数中 name 表示的就是地址栏上传递过来的数据
+					return 'xxx'
+			2.带多个参数的路由
+				localhost:5000/show2/sf.zh/85
+				localhost:5000/show2/wj.zh/18
+				localhost:5000/show2/ss.yin/30
+
+				@app.route('/show2/<name>/<age>')
+				def show2(name,age):
+					reutrn 'xxx'
+			3.指定参数类型的路由
+				@app.route('/show3/<name>/<int:age>')
+				def show3(name,age):
+					return 'xxx'
+				
+				<int:age> : 表示age参数时一个整型的数值而并非默认的字符串
+					int:类型转换器
+
+					Flask 中所支持的类型转换器：
+						类型转换器        作用
+						缺省              字符串型，但不能有/(斜杠)
+						int:              整型
+						float:            浮点型
+						path:             字符串型，可以有 / (斜杠)
+		3.多 URL 的路由匹配
+			允许在一个视图处理函数中设置多个url路由规则
+			@app.route('/')
+			@app.route('/index')
+			def index():
+				reutrn "xxx"
+		4.路由中设置 HTTP 请求方法
+			Flask路由规则也允许设置对应的请求方法，只有将匹配上请求方法的路径交给视图处理函数去执行
+
+			@app.route('/post',methods=['POST'])
+			def post():
+				return 'xxxx'
+			
+			说明：只有post请求方式允许访问 localhost:5000/post
+		5.URL的反向解析
+			正向解析：程序自动解析，根据@app.route()中的访问路径来匹配处理函数
+
+			反向解析：通过视图处理函数的名称自动生成视图处理函数的访问路径
+
+			Flask 中提供了 url_for() 函数，用于反向解析 url
+				第一个参数：指向函数名(通过@app.route()修饰的函数)
+				后续的参数们：对应要构建的url上的变量
+
+				ex:
+					@app.route('/')
+					def index():
+						return "Index"
+
+					@app.route('/show/<name>')
+					def show(name):
+						reutrn "name:%s" % name
+
+					1. url_for('index') : 结果为 ：/
+					2. url_for('show',name='zsf') : 结果为 ：/show/zsf
+				
+				特殊：
+					url_for('static',filename='style.css')
+					静态文件反向解析，后续使用，讲解
+7.模板 - Templates
+	1.什么是模板
+		模板是一个包含响应文本的文件(通常是html文件)，该文件中允许包含"占位变量"来表示动态的内容，其具体值在请求中才能知道。"占位变量"最终会被真实的值所替换。
+		模板最终也会被解析成响应的字符串，这一过程称为"渲染"
+
+		Flask实际上是使用 Jinja2 强大的模板引擎
+	2.模板的设置
+		默认情况下，Flask会在程序文件夹中的 templates 子文件夹中寻找模板
+
+		需要手动创建 templates 文件夹
+	3.渲染模板
+		在 视图函数中 ，通过 
+			return render_template() 将模板渲染成字符串再响应给客户端
+		
+		render_template() 语法:
+			render_template('xxx.html',arg1=value1,arg2=value2)
+				参数1 ： xxx.html ，要渲染给客户端的html模板文件
+				参数2 ~ n ：要传递给模板动态显示的变量占位符，如果没有动态的变量占位符，则可以省略
+
+				返回值：字符串
+
+
+
+
+
+回顾
+1.搭建结构
+	from flask imort Flask
+	
+	app = Flask(__name__)
+
+	@app.route('/路径')
+	def fun():
+		return ""
+
+	if __name__ == "__main__":
+		app.run(debug=True,port=5555)
+2.路由
+	@app.route() 来表示路由
+
+	@app.route('/') : 访问路径 /
+	def ...
+	@app.route('/index') : 访问路径 /index
+	def ....
+	@app.route('/user/info') : 访问路径 /user/info
+	def ...
+	@app.route('/user/<name>') : 访问路径 /user/xxx
+	def user(name):
+		# name 是一个字符串
+		return ''
+	@app.route('/user/<int:age>') : 访问路径 /user/xxx
+	def user(age):
+		# age 是一个整数
+		return ''
+	类型转换器：
+		默认 ：字符串，不允许有 /
+		int :
+		float : 
+		path : 字符串 ，允许有 /
+
+	@app.route('/')
+	@app.route('/index')
+	@app.route('/<int:page>')
+	@app.route('/index/<int:page>')
+	def index(page=None):
+		return ''
+
+	路由的反向解析：
+		url_for(funName,arg1=value1,arg2=value2)
+			funName : 要反向生成地址的函数名
+			arg1 ~ n : 传递给url的参数名和值
+3.Tempates - 模板
+	1.模板设置
+		需要在 flask 程序文件夹中创建一个 templates 的子目录
+	2.渲染模板
+		render_template() : 将模板渲染成字符串再响应
+		语法：
+			render_template('xxx.html',arg1=value1,arg2=value2)
+				xxx.html : 要渲染的 文件
+				arg1 ~ n : 要传递给模板的变量占位符
+				返回值：字符串
+
+=========================================================
+1.模板 - Templates
+	1.模板中的语法
+		1.变量
+			变量时一种特殊的占位符，告诉模板引擎该位置的值是从渲染模板时的数据中来获取的
+
+			在视图中 ：
+				@app.route('/')
+				def index():
+					return render_template('xxx.html',name='sf.zh',age=18)
+				
+				name 和 age  就是要传递到 xxx.html 中的变量
+			
+			在模板中 ：
+				{{变量名}}
+
+			练习：在 01_temp.html基础上，完成下列效果显示
+
+			书名 ：《钢铁是咋练成的》
+			作者 ： 奥斯特洛夫斯基
+			价格 ： 32.5
+			出版社 ：北京大学出版社
+		2.过滤器
+			1.什么是过滤器
+				过滤器是允许在变量输出显示之前改变变量的值
+			2.过滤器的语法
+				{{变量|过滤器}}
+
+				Jinja2 变量过滤器
+				过滤器名            说明
+				capitalize          首字符变大写，其他字符变小写
+				lower               把值转换成小写
+				upper               把值转换成大写
+				title               把值中的每个单词的首字符变大写
+				trim                把值两端的空格去掉
+		3.控制结构
+			1.if结构
+				{% if 条件 %}
+					
+				{% endif %}
+
+
+
+				{% if 条件 %}
+					满足条件要执行的代码
+				{% else %}
+					不满足条件要执行的代码
+				{% endif %}
+			2.for结构
+				{% for 变量 in 元组|列表|字典 %}
+				{% endfor %}
+			3.宏
+				使用 {% macro %} 标签声明宏
+				
+				<!-- 声明 -->
+				{% mscro show(str) %}
+					<h1>{{str}}</h1>
+				{% endmacro %}
+				
+				<!-- 调用 -->
+				{{show(uname)}}
+
+				为了方便重复使用，允许将宏放在单独的模板文件中声明定义
+				1.创建 macro.html
+					{% mscro show(str) %}
+						<h1>{{str}}</h1>
+					{% endmacro %}
+
+					{% mscro show_li(str) %}
+						<li>{{str}}</li>
+					{% endmacro %}
+				2.在使用的网页中 ，导入 macro.html
+					{% import 'macro.html' as macros %}
+
+
+					{{ macros.show_li(uname) }}
+			4.模板的包含
+				在多处重复使用的模板代码可以放在单独的文件中，可以被其他的模板所包含（引用）
+				{% include 'xxx.html' %}
+	2.静态文件
+		1.什么是静态文件
+			在Flask中不能与服务器动态交互的文件都是静态文件
+			如：css,js,图片，音视频，.... ....
+		2.静态文件的处理
+			所有静态文件都保存在项目文件夹中的 static 文件夹中
+			在访问静态文件的时候需要通过 /static/资源路径 进行访问
+
+			<img src="/static/资源路径">
+
+			反向解析：
+				url_for('static',filename='<file_path>')
+				<img src="{{url_for('static',filename='images/b04.jpg')}}"> 
+	3.模板的继承
+		1.什么是模板的继承
+			模板的继承类似于类的继承，如果在一个模板中出现的大量内容是另外一个模板的话，那么就可以使用继承的方式来简化开发
+		2.语法
+			1.父模板中
+				需要定义出哪些内容在子模板中是可以被重写的
+				{% block 块名 %}
+				{% endblock %}
+
+				block : 定义允许在子模板中被修改的内容
+					1.在父模板中正常显示，没有任何影响
+					2.在子模板中可以被重写
+			2.子模板中
+				1.使用 {% extends '父模板名称' %} 来完成继承
+				2.使用 {% block 块名 %} 来重写父模板中的同名内容
+					{% block 块名 %}
+						覆盖掉父模板中的内容
+					{% endblock %}
+
+					允许通过 {{super()}} 来调用父模板中的内容
+2.自定义错误页面	
+	1. 404 的错误处理
+		@app.errorhandler(404)
+		def page_not_found(e):
+			return render_template('404.html'),404
+	2. 500的错误处理
+		@app.errorhandler(500)
+		def internal_server_error(e):
+			return render_template('500.html'),500
+	... ...
+	404.html,500.html 需要自定义
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+title = '我的第一个模板'
+bookName = '钢铁是咋练成的'
+author = '奥斯特洛夫斯基'
+price = 32.5
+publisher = '北京大学出版社'
+
+
+locals() : 
+{
+	'title': '我的第一个模板', 
+	'publisher': '北京大学出版社',
+	'price': 32.5, 
+	'bookName': '钢铁是咋练成的', 
+	'author': '奥斯特洛夫斯基'
+}
+
+
+http://127.0.0.1:5000/images/b04.jpg
+
+
+
+
+
+
+
+
+
+
+回顾
+1.模板的语法
+	1.变量
+		在视图中：
+			return render_template('xx.html',变量1=值1,变量2=值2)
+			return render_template('xx.html',params=locals())
+			
+			允许传递到模板中变量的数据类型：
+				数字，字符串，字典，列表，元组，对象
+		在模板中：
+			{{变量}}
+			{{uname}}
+			{{list[1]}} 或 {{list.1}}
+			{{person.show()}}
+	2.过滤器
+		在变量输出之前改变变量的值
+		{{变量|过滤器}}
+		过滤器：
+			lower
+			upper
+			capitalize
+			trip
+	3.控制结构
+		1.if 结构
+			{% if 条件 %}
+				满足条件要执行的代码块(html/变量/过滤器)
+			{% endif %}
+
+			{% if 条件 %}
+			{% else %}
+			{% endif %}
+		2.for 结构
+			{% for 变量 in 列表，元组，字典%}
+
+			{% endfor %}
+		3.宏
+			声明：
+			{% macro 函数名() %}
+				函数体(html/结构/变量/过滤器)
+			{% endmacro %}
+			调用：
+			{{ 函数名() }}
+
+			允许将宏声明在独立的网页中：
+			1.创建网页 - macro.html
+				{% macro 函数名() %}
+					函数体(html/结构/变量/过滤器)
+				{% endmacro %}
+			2.在网页中导入macro.html
+				{% import 'macro.html' as macros %}
+
+				{{macros.函数名()}}
+		4.模板的包含
+			{% include 'xxx.html' %}
+	4.静态文件
+		1.在项目目录中创建 static 目录用于保存静态文件
+		2.在模板中使用静态文件
+			/static/...
+
+			<img src="/static/img/xxx.jpg">
+			<img src="{{url_for('static',filename='img/a.jpg') }}">
+	5.继承
+		1.父模板中
+			{% block 块名 %}
+			{% endblock %}
+
+			block 作用：定义在子模板中允许被修改的内容部分
+				1.在父模板中是被正常显示的
+				2.在子模板中可以被重写			
+		2.子模板中
+			1.使用 {% extends '父模板名称' %} 实现继承
+			2.使用 {% block 块名 %}..{% endblock %}
+				覆盖父模板中的同名内容
+			3.使用 {{super()}} 调用父模板中的内容
+====================================================
+1.修改配置
+	app = Flask(__name__,template_folder='muban',static_url_path='/s',static_folder='/sta')
+		1.template_folder
+			设置模板的保存路径
+		2.static_url_path
+			设置静态文件的访问路径(映射到WEB中的访问路径)
+		3.static_folder
+			设置静态文件的保存目录(映射到项目中的目录名称)
+2.请求(request) 和 响应(response)
+	1.HTTP协议
+	2.请求对象 - request
+		request - 请求对象，封装了所有与请求相关的信息，如：请求消息头，请求数据，请求路径，... ...
+		在 Flask 中，请求信息被封装到 request 对象中
+			from flask import request
+		1.request的成员(常用)
+			1.scheme : 获取请求方案(协议)
+			2.method : 获取本次请求的请求方式
+			3.request.args : 获取使用get请求方式提交的数据
+			4.request.form : 获取使用post请求方式提交的数据
+			5.request.values : 获取GET和POST请求方式提交的数据(GET和POST通用)
+			6.request.cookies : 获取cookies中的信息
+			7.request.headers : 获取请求消息头的信息
+			8.request.path : 获取请求的url地址
+			9.request.files : 获取用户上传的文件
+			10.request.full_path : 获取请求的完整路径
+			11.request.url : 获取访问地址
+		2.获取请求提交的数据
+			1.get 请求方式
+				get请求的数据是放在 QueryString 中的
+					request.args 封装的就是 get 请求的数据，类型为字典
+						request.args['name'] : 获取 name 对应的值
+						request.args.get('name') : 同上
+						request.args.getlist('name_list') : 获取 name_list 列表数据
+			2.post 请求方式
+				post请求的数据是放在 form 中的
+					request.form 封装的就是 post 请求的数据，类型为 字典
+						request.form['name'] : 获取 name 对应的值
+						request.form.get('name') : 用上
+						request.form.getlist('name_list') : 获取name_list列表数据
+
+				练习：
+					1.访问地址 localhsot:5000/post,能够去往 04-form.html
+						包含一个表单，post请求方式，提交地址 自定义
+							1. 文本框 ，用户名
+							2. 密码框 ，用户密码
+							3. 邮件框 ，用户邮箱 <input type="email">
+							4. 文本框 ，真实姓名 
+							5. 提交按钮
+					2.提交时，提交到 post_do
+					3.post_do
+						获取所有请求提交的数据，并打印在终端上
+	3.响应对象
+		响应对象其实就是要响应给客户端的内容，可以是普通字符串，可以是模板 或者 是重定向
+		@app.route('/')
+		def index():
+			#return "Hello World"
+			#return render_template('xxx.html')
+			# 以上两种行为，本质上响应回去的都是字符串
+		1.构建响应对象，再响应给客户端
+			注意：不是直接响应字符串，而是响应对象
+				响应对象可以包含响应的字符串，同时也可以实现其他的响应操作
+			在 flask 中，使用 make_response() 构建响应对象
+				from flask import make_response
+
+				...
+				resp = make_response('响应内容')
+				# 实现其他的响应操作，如：添加cookies，...
+				return resp
+		2.重定向
+			1.什么是重定向
+				由服务器端通知客户端重新向新的地址发送请求
+			2.语法
+				from flask import redirect
+
+				... ...
+				resp = redirect('重定向地址')
+				return resp
+	4.文件上传
+		1.注意问题
+			表单中
+				提交方式必须为 post
+				enctype属性必须设置为 multipart/form-data
+		2.服务器端
+			1.通过 request.files 获取上传的文件
+				f = request.files['文件框name属性值']
+			2.通过 f.save(保存路径) 将文件保存到指定目录处 
+				通过 f.filename 获取文件的名称
+				filename = f.filename
+				f.save('static/'+filename)
+
+		任务：
+			将上传的文件名称更改为 当前的时间(年月日时分秒微秒).扩展名 再保存到服务器上
+
+
+
+
+['__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__enter__', '__eq__', '__exit__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_cached_json', '_get_data_for_json', '_get_file_stream', '_get_stream_for_parsing', '_load_form_data', '_parse_content_type', 'accept_charsets', 'accept_encodings', 'accept_languages', 'accept_mimetypes', 'access_route', 'application', 'args', 'authorization', 'base_url', 'blueprint', 'cache_control', 'charset', 'close', 'content_encoding', 'content_length', 'content_md5', 'content_type', 'cookies', 'data', 'date', 'dict_storage_class', 'disable_data_descriptor', 'encoding_errors', 'endpoint', 'environ', 'files', 'form', 'form_data_parser_class', 'from_values', 'full_path', 'get_data', 'get_json', 'headers', 'host', 'host_url', 'if_match', 'if_modified_since', 'if_none_match', 'if_range', 'if_unmodified_since', 'input_stream', 'is_json', 'is_multiprocess', 'is_multithread', 'is_run_once', 'is_secure', 'is_xhr', 'json', 'list_storage_class', 'make_form_data_parser', 'max_content_length', 'max_form_memory_size', 'max_forwards', 'method', 'mimetype', 'mimetype_params', 'on_json_loading_failed', 'parameter_storage_class', 'path', 'pragma', 'query_string', 'range', 'referrer', 'remote_addr', 'remote_user', 'routing_exception', 'scheme', 'script_root', 'shallow', 'stream', 'trusted_hosts', 'url', 'url_charset', 'url_root', 'url_rule', 'user_agent', 'values', 'view_args', 'want_form_data_parsed']
+
+
+http://localhost:5001/form_do?uname=zhouzhiruo&upwd=songqingshu
+
+http://主机:端口/请求路径?参数1=值1&参数2=值2
+
+http://localhost:5001/form_do?uname=guojing&upwd=huangrong
+
+
+
+
+
+
+
+1.请求对象 - request
+	from flask import request
+
+	属性
+		1.request.method
+		2.request.args
+		3.request.form
+		4.request.cookies
+		5.request.headers
+			request.headers.get('referer')
+	1.获取 get 请求数据
+		使用超链接发送get请求，拼地址栏参数
+		<a href="/request?name=zsf&age=85">xxx</a>
+
+		name=request.args.get('name')
+		age =request.args.get('age')
+		使用js中的location对象，发送get请求并拼接参数
+		<script>
+			$btn.click(function(){
+				location.href='xxxxx?arg1=value1&arg2=value2'
+			});
+		</script>
+	2.获取 post 请求数据
+		request.form.get('xxx')
+		request.form.getlist('name_list')
+2.响应对象
+	除了可以响应字符串和模板之外，还可以是响应对象或重定向
+	1.响应对象 - make_response()
+		from flask import make_response
+
+		resp = make_response('xxxx')
+		return resp
+
+		resp = make_response(render_template('xx.html',params=locals()))
+		return resp
+	2.重定向
+		由服务器通知浏览器向新的地址发送一个请求
+		from flask import redirect
+
+		resp = redirect('重定向地址')
+		return resp
+3.文件上传
+	1.前端页面
+		1.form中的method的值必须为 post
+		2.form中的enctype的值必须为 multipart/form-data
+
+		大量数据上传的时候（如：超大文件），就不能使用网页上传了（主要是由于http协议不支持），需要使用单独的上传工具（C/S版的）
+	2.服务器端
+		使用 request.files 接收上传的文件
+		f = request.files['文件选择框名称']
+		f.save('static/'+f.filename)
+
+
+
+
+os.path.dirname(__file__)
+os.path.join(目录1,目录2,目录n)
+
+
+==================================================
+1.模型 - Models
+	1.什么是模型
+		模型，是根据数据库中表的结构来创建出来的class。每一张表到编程语言中就是一个class，表中的每一个列，到编程语言中就是class中的一个属性。
+	2.创建 和 使用模型 - ORM
+		1.什么是ORM
+			ORM ：Object Relational Mapping
+				简称：ORM , O/RM , O/R Mapping
+				中文：对象关系映射
+		2.ORM的三大特征
+			1.数据表(table) 到 编程类(class) 的映射
+				数据库中的每一张表 对应 到编程语言中，都有一个类
+
+				在ORM中
+					允许将数据表 自动 生成一个类
+					也允许将类 自动 生成一张表
+			2.数据类型的映射
+				将数据库表中的字段以及数据类型 对应到 编程语言中类的属性
+
+				在ORM中
+					允许将表中的字段和数据类型自动映射到编程语言中
+					也允许将类中的属性和类型也映射到数据库表中
+			3.关系映射
+				将数据库中表之间的关系 对应 到编程语言中类之间的关系
+
+				数据库表之间的关系：
+					一对一，一对多，多对多
+						一对一 ： 主外键关联，外键需要加唯一约束
+						一对多 ： 主外键关联
+						多对多 ： 
+		3.ORM的优点
+			1.提高了开发的效率
+			2.可以省略庞大的数据访问层，即便不用SQL编码也能完成对数据的CRUD操作
+	3.定义模型
+		1.数据库 和 框架的配置 
+			1.安装 SQLAlchemy
+				pip3 install sqlalchemy
+				pip3 install flask-sqlalchemy
+			2.创建数据库
+				create database flask default charset utf8 collate utf8_general_ci;
+			3.配置数据库
+				from flask import Flask
+				#将SQLAlchemy导入进来
+				from flask_sqlalchmey import SQLAlchemy
+
+				app = Flask(__name__)
+
+				#app.config['SQLALCHEMY_DATABASE_URI']='mysql://username:pwd@host:port/dbname'
+				app.config['SQLALCHEMY_DATABASE_URI']='mysql://root:123456@localhost:3306/flask'
+				
+				#创建SQLAlchemy的实例
+				db = SQLAlchemy(app)
+
+				#db是SQLAlchemy的实例，表示程序正在使用的数据库，同时也获得了SQLAlchemy中的所有功能
+
+				if __name__ == "__main__":
+					app.run(debug=True)
+		2.定义模型
+			模型：数据库中的表在编程语言中的体现，其本质就是一个Python 的类（可称为：模型类 或 实体类）。类中的属性要与数据库表中的列相对应
+
+			语法：
+				class MODELNAME(db.Model):
+					__tablename__ = "TABLENAME"
+					COLUMN_NAME = db.Column(db.TYPE,OPTIONS)
+	
+					1.MODELNAME:定义模型类名称，根据表名设定
+					2.TABLENAME:映射到数据库中表的名字
+					3.COLUMN_NAME:属性名，映射到表中列的名字
+					4.db.TYPE:映射到列的数据类型
+					5.OPTIONS:列选项
+
+			db.TYPE 列类型如下：
+				类型名         python类型         说明
+				Integer        int                普通整数，32位
+				SamllInteger   int                小范围整数，通常16位
+				BigInteger     int或long          不限精度的整数
+				Float          float              浮点数
+				Numeric        decimal.Decimal    定点数
+				String         str                变长字符串
+				Text           str                变长字符串，优化
+				Unicode        unicode            变长Unicode字符串
+				UnicodeText    unicode            优化后的变长Unicode
+				Boolean        bool               布尔值
+				Date           datetime.date      日期
+				Time           datetime.time      时间
+				DateTime       datetime.datetime  日期和时间
+			
+			OPTIONS 列选项
+				选项名           说明
+				primary_key      设置为True则表示该列为主键
+				unique           设置为True则表示该列的值唯一
+				index            设置为True则表示该列要创建索引
+				nullable         设置为True则表示该列允许为空
+				default          为该列定义默认值
+		练习：
+			1.创建 Student 模型类
+				表名 ： student
+				字段：
+					1.id，主键，自增
+					2.sname ，长度为30的字符串，不允许为空
+					3.sage ，整数
+			2.创建 Teacher 模型类
+				表名 ：teacher
+				字段：
+					1.id，主键，自增
+					2.tname ，长度为30的字符串
+					3.tage ，整数
+			3.创建 Course 模型类
+				表名：course  
+				字段：
+					1.id ，主键，自增
+					2.cname ，长度为30的字符串
+	4.数据库操作
+		1.插入
+			db.session.add(Models)
+			db.session.commit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+select s.sname,c.cname 
+from Student as s
+inner join Student_Course as sc
+on s.id = sc.s_id
+inner join Course as c
+on c.id = sc.c_id
+where s.id = 1
+
+Window 下 ： Navicate for MySQL
+
+
+
+
+
+
+
+1.模型
+	使用名为SQLAlchemy的ORM框架，并且需要 Flask-SQLAlchemy
+
+	配置
+		from flask_sqlalchmey import SQLAlchemy
+
+		app.config['SQLALCHEMY_DATABASE_URI']="mysql://username:password@host:port/dbname"
+		app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+
+		db = SQLAlchemy(app)
+
+	1.定义模型
+		class MODELNAME(db.Model)
+			__tablename__ = "TABLENAME"
+
+			COLUMN_NAME = db.Column(db.TYPE,OPTIONS)
+			... ...
+
+=========================================================
+1.FLASK-SQLALCHEMY - 查询
+	1.基于 db.session 进行查询
+		1.db.session.query()
+			该函数会返回一个Query对象，类型为 BaseQuery，包含了指定实体类对应的表中所有的数据
+
+			该函数也可以接受多个参数，参数表示的是要查询哪个实体
+		2.查询执行函数
+			目的：在查询的基础上得到最终想要的结果
+			语法：db.session.query(...).查询执行函数()
+			函数         说明
+			all()        以列表的方式返回查询的所有结果
+			first()      返回查询中的第一个结果，如果没有结果，则返回None
+			first_or_404()  返回查询中的第一个结果，如果没有结果，则终止并返回404
+			count()      返回查询结果的数量
+		3.查询过滤器函数
+			作用：在查询的基础上，筛选部分列出来
+			语法：db.session.query(..).过滤器函数().查询执行函数()
+			过滤器函数：
+			函数                说明
+			filter()            按指定条件进行过滤(多表，单表，定值，不定值..)
+			filter_by()         按等值条件进行过滤
+			limit()             按限制行数获取
+			order_by()          根据指定条件进行排序
+			group_by()          根据指定条件进行分组
+
+			详解：
+			1.filter()
+				1. 查询年龄 大于 30 的Users 的信息
+					db.session.query(Users).filter(Users.age>30).all()
+					注意：条件必须由 模型类.属性 来组成
+				2.查询年龄 大于 30 且 id 大于5 的Users的信息
+					db.session.query(Users).filter(Users.age>30,Users.id > 5).all()
+				3.查询年龄大于30 或者 id大于5 的Users的信息
+					注意：查询 或 的操作，要借助 or_()
+					db.session.query(Users).filter(or_(条件1,条件2)).all()
+				4.查询id等于5的Users的信息
+					注意：等值判断必须使用 ==
+					db.session.query(Users).filter(Users.id==5).first()
+				5.查询 email 中包含 'w' 的users的信息 - 模糊查询 like
+					db.session.query(Users).filter(Users.email.like('%w%')).all()
+				6.查询 id 在 [1,2,3] 之间的 Users 的信息
+					db.session.query(Users).filter(Users.id.in_([1,2,3])).all()
+			2.filter_by()
+				1.查询 id=5的Users的信息
+					db.session.query(Users).filter_by(id=5).first()
+			3.limit()
+				1.在整个查询结果中获取前5条数据	
+					db.session.query(Users).limit(5).all()
+			4.order_by()
+				1.对Users表中所有的数据按id倒序排序
+					db.session.query(Users).order_by('id desc').all()
+			5.group_by()
+				db.session.query(Users).group_by('age').all()
+	2.基于 Models 进行查询
+		Models.query.查询过滤器(条件参数).查询执行函数()
+2.FLASK-SQLALCHEMY - 删除 和 修改
+	1.删除
+		1.查询出要删除的实体
+			user=db.session.query(Users).filter_by(id=5).first()
+		2.根据所提供的删除方法将信息删除
+			db.session.delete(user)
+	2.修改
+		将 id 为1 的用户的 username 改为 Wang WC ，年龄改为 40
+		1.查
+		user = Users.query.filter_by(id=1).first()
+		2.改
+		user.username = "Wang WC"
+		user.age = 40
+		3.保存
+		db.session.add(user)
+3.FLASK-SQLALCHEMY - 关系映射
+	1.一对多
+		语法实现
+			1.在"多"实体中增加
+				外键列名=db.Column(db.Integer,db.ForeignKey('主表.主键'))
+			2.在"一"实体中增加反向引用关系
+				属性名=db.relationship('多的实体类名',backref='属性名',lazy='dynamic')
+		
+
+
+
+
+Teacher & Course
+每名Teacher只能教一门Course
+每门Course可以由多名Teacher来教
+
+
+SELECT users.id AS users_id, users.username AS users_username, users.age AS users_age, users.email AS users_email 
+FROM users GROUP BY users.age
+
+SELECT users.id AS users_id, users.username AS users_username, users.age AS users_age, users.email AS users_email 
+FROM users ORDER BY id desc,age asc
+
+
+SELECT users.id AS users_id, users.username AS users_username, users.age AS users_age, users.email AS users_email 
+FROM users ORDER BY id desc
+
+
+[<Users 'WangWeichao'>, <Users '吕泽'>, <Users '老魏'>]
+
+SELECT users.id AS users_id, users.username AS users_username, users.age AS users_age, users.email AS users_email 
+FROM users 
+ LIMIT %(param_1)s, %(param_2)s
+
+
+SELECT users.id AS users_id, users.username AS users_username, users.age AS users_age, users.email AS users_email 
+FROM users 
+ LIMIT %(param_1)s
+
+
+select * from users limit 0,5
+select * from users limit 5
+
+
+SELECT users.id AS users_id, users.username AS users_username, users.age AS users_age, users.email AS users_email 
+FROM users 
+WHERE users.age > %(age_1)s AND users.id > %(id_1)s
+
+SELECT users.id AS users_id, users.username AS users_username, users.age AS users_age, users.email AS users_email 
+FROM users
+
+
+SELECT users.username AS users_username, users.email AS users_email 
+FROM users
+
+
+SELECT users.id AS users_id, users.username AS users_username, users.age AS users_age, users.email AS users_email, course.id AS course_id, course.cname AS course_cname 
+FROM users, course
+
+[<Users '王伟超'>, <Users 'WangWeichao'>, <Users '吕泽'>, <Users '老魏'>]
+
+
+
+1.SQLAlchemy - 查询
+	1.基于 db.session
+		1.db.session.query()
+			参数：实体，多个实体，实体中的属性
+			返回值：BaseQuery()
+
+			1.查询执行函数
+				1.all()
+				2.first()
+				3.first_or_404()
+				4.count()
+			2.查询过滤器
+				1.filter()
+				2.filter_by()
+				3.limit()
+					limit().offset()
+				4.order_by()
+				5.group_by()
+	2.基于 Models 
+		Models.query.查询过滤器().查询执行函数()
+2.SQLAlchemy - 删除、修改
+	删除 ：db.session.delete(model)
+		model : 要删除的实体对象
+	修改 ：
+		1.查 2.改 3.保存
+3.关系映射
+	Teacher ：id,tname,tage (多)
+	Course : id,cname (一)
+
+	一名老师只能教一门课
+	一门课可以由多个老师来教
+
+	数据库中的实现：
+		在"多"表中增加外键引用自"一"表中主键
+	
+	class Course(db.Model):
+		__tablename__ = 'course'
+		id = db.Column()
+		...
+		# Teacher类中会存在一个隐式属性 ：course
+		teachers = db.relationship('Teacher',backref='course',lazy='dynamic')
+
+	class Teacher(db.Model):
+		__tablename__ = 'teacher'
+		id = db.Column()
+		tname = db.Column()
+		..
+		course_id = db.Column(db.Integer,db.ForeignKey('course.id'))
+
+===============================================
+1.关系映射
+	1.一对多
+		语法：
+			1."多"实体中
+				外键列名=db.Column(db.Integer,db.ForeignKey('主表.主键'))
+			2."一"实体中 
+				增加反向引用关系
+				属性名=db.relationship('多表实体类名',关系选项)
+				常用的关系选项：
+				选项名               说明
+				backref              在关系的另一个模型中添加反向引用
+				lazy                 指定如何加载相关记录
+				                     select : 首次访问时加载
+														 immediate : 源对象加载后立马加载关联数据
+														 subquery : 立即加载，但使用子查询
+														 noload : 永不加载
+														 dynamic : 不加载记录，但提供加载记录的查询
+				uselist							 如果设置为False，则不使用列表，使用标量
+				secondary            指定多对多关系中关联表的名字
+	2.一对一
+		1·什么是一对一
+			A表中的一条记录只能与B表中的一条记录关联
+			B表中的一条记录只能与A表中的一条记录关联
+		2.在数据库中的体现
+		3.SQLAlchemy
+			class Wife(db.Model):
+				... ...
+				teacher_id = db.Column(db.Integer,db.ForeignKey('teacher.id'))
+
+			class Teacher(db.Model):
+				...
+				wife = db.relationship('Wife',backref='teacher',lazy='dynamic',uselist=False)
+	3.多对多
+		1.什么是多对多
+			A表中的一条数据可以与B表中的任意多条数据关联
+			B表中的一条数据可以与A表中的任意多条数据关联
+		2.实现
+			使用第三张表来关联(并不需要实体类)
+			1.创建第三张表
+				student_course=db.Table(
+					'student_course',# 在数据库中的表名
+					db.Column('id',db.Integer,primary_key=True),#该表的主键
+					db.Column('student_id',db.Integer,db.ForeignKey('student.id')),
+					db.Column('course_id',db.Integer,db.ForeignKey('course.id')),
+				)
+			2.增加关联属性 以及  反向引用
+				class Student(db.Model):
+					... ...
+					courses=db.relationship(
+						'Course',
+						secondary='student_course',
+						lazy='dynamic',
+						backref=db.backref('students',lazy='dynamic')
+					)
+
+
+
+
+
+
+SELECT 
+	teacher.id AS teacher_id, 
+	teacher.tname AS teacher_tname, 
+	teacher.tage AS teacher_tage, 
+	teacher.course_id AS teacher_course_id, 
+	course.id AS course_id, 
+	course.cname AS course_cname 
+FROM teacher, course
+WHERE teacher.course_id = course.id
+
+[
+	(<Teacher '魏老师'>, <Course 'PYTHON 基础'>), 
+	(<Teacher '魏老师'>, <Course 'PYTHON 基础'>), 
+	(<Teacher '魏老师'>, <Course 'PYTHON 基础'>), 
+	(<Teacher '吕老师'>, <Course 'PYTHON 高级'>), 
+	(<Teacher '王老师'>, <Course 'PYTHON WEB 开发'>),
+	(<Teacher '蒙蒙老师'>, <Course 'PYTHON WEB 开发'>)
+]
+
+[
+	'Course', 'Teacher', '__add__', '__class__', '__contains__', '__delattr__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__getitem__', '__getnewargs__', '__gt__', '__hash__', '__init__', '__iter__', '__le__', '__len__', '__lt__', '__module__', '__mul__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__rmul__', '__setattr__', '__sizeof__', '__slots__', '__str__', '__subclasshook__', '_asdict', '_fields', '_real_fields', 'count', 'index', 'keys']
