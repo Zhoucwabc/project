@@ -8,3 +8,9 @@ class User(models.Model):
     upwd = models.CharField(max_length=20)
     uemail = models.EmailField(null=True)
     isActive = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+    
+    def Meta(self):
+        db.table = 'user'
