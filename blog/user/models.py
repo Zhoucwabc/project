@@ -7,3 +7,4 @@ class User(models.Model):
     uname = models.CharField(max_length=20)
     upwd = models.CharField(max_length=20)
     uemail = models.EmailField(null=True)
+    isActive = models.BooleanField(default=True)
