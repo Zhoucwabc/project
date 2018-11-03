@@ -13,4 +13,4 @@ class User(models.Model):
         return self.name
     
     def Meta(self):
-        db.table = 'user'
+        db_table = 'user'
