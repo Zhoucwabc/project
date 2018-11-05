@@ -12,17 +12,27 @@
 {% endblock %}
 
 {% block form %}
+
+{% if errMsg %}
+<script>
+    alert('用户名或密码不正确');
+</script>
+{% endif %}
+
 <form action="#" method="post">
     {% csrf_token %}
     <div class="input-group">
         <span><i class="fa fa-user" aria-hidden="true"></i></span>
-        <input type="text" placeholder="账号" required="">
+        <input type="text" placeholder="账号" name="uname" required="">
     </div>
     <div class="input-group">
         <span><i class="fa fa-lock" aria-hidden="true"></i></span>
-        <input type="Password" placeholder="密码" required="">
+        <input type="Password" placeholder="密码" name="upwd" required="">
     </div>
         <input type="checkbox" value="remember-me" /> <h4>记住密码</h4>
+        <a href="{% url 'register' %}" style="margin-left: 130px;">注册新号</a>
+        <a href="{% url 'forget' %}" style="margin-left: 130px;">忘记密码</a>
         <button class="btn btn-danger btn-block" type="submit">登录</button >
 </form>
+
 {% endblock %}
