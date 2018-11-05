@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from .models import *
 
 
 # Create your views here.
@@ -15,6 +16,12 @@ def register_views(request):
         nickname = request.POST['nickname']
         uemail = request.POST['uemail']
         print("uname:",uname,"upwd:",upwd,"nickname:",nickname,"uemail:",uemail)
+        user = User()
+        user.uname = uname
+        user.upwd = upwd
+        user.nickname = nickname
+        user.uemail = uemail
+        user.save()
         return redirect(reverse('login'))
 
 def login_views(request):
@@ -24,7 +31,12 @@ def login_views(request):
         uname = request.POST['uname']
         upwd = request.POST['upwd']
         print('uname:',uname,'upwd',upwd)
-        return redirect(reverse('index'))
+        users = User.objects.filter(uname=uname, upwd=upwd)
+        if users:
+            return redirect(reverse('index'))
+        else:
+            errMsg = "登录错误"
+            return render(request, 'login.html', locals())
 
 def forget_views(request):
     if request.method == 'GET':
@@ -34,3 +46,4 @@ def forget_views(request):
         upwd = request.POST['upwd']
         print('uname:',uname,'upwd',upwd)
         return redirect(reverse('login'))
+
